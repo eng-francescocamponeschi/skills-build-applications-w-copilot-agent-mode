@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fetchFromApi } from '../config/api';
+import { getApiBaseUrl } from '../config/api';
 
 export default function Teams() {
   const [teams, setTeams] = useState([]);
@@ -7,7 +7,16 @@ export default function Teams() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchFromApi('/teams')
+    const codespaceName = import.meta.env.VITE_CODESPACE_NAME;
+    const apiUrl = codespaceName && codespaceName.trim() !== ''
+      ? `https://${codespaceName}-8000.app.github.dev/api/teams`
+      : `${getApiBaseUrl()}/teams`;
+    
+    fetch(apiUrl)
+      .then((response) => {
+        if (!response.ok) throw new Error(`API error: ${response.status}`);
+        return response.json();
+      })
       .then((data) => {
         setTeams(Array.isArray(data) ? data : []);
         setLoading(false);
