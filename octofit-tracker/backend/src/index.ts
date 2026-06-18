@@ -2,7 +2,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
 import { connectDatabase, MONGODB_URI } from './config/database.js';
-import { getBaseUrl } from './config/server.js';
+import { getBaseUrl } from './server.js';
 
 import activitiesRouter from './routes/activities.js';
 import leaderboardRouter from './routes/leaderboard.js';
