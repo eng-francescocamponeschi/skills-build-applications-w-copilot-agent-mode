@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const express_1 = __importDefault(require("express"));
-const mongoose_1 = __importDefault(require("mongoose"));
+const database_js_1 = require("./config/database.js");
 const activities_js_1 = __importDefault(require("./routes/activities.js"));
 const leaderboard_js_1 = __importDefault(require("./routes/leaderboard.js"));
 const teams_js_1 = __importDefault(require("./routes/teams.js"));
@@ -15,7 +15,6 @@ const workouts_js_1 = __importDefault(require("./routes/workouts.js"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = Number(process.env.PORT) || 8000;
-const mongoUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/octofit_db';
 const codespaceName = process.env.CODESPACE_NAME;
 const baseUrl = codespaceName
     ? `https://${codespaceName}-${port}.app.github.dev`
@@ -28,7 +27,7 @@ app.get('/api/health', (_req, res) => {
         service: 'octofit-tracker-backend',
         port,
         baseUrl,
-        mongoUri,
+        mongoUri: database_js_1.MONGODB_URI,
     });
 });
 app.use('/api/users', users_js_1.default);
@@ -36,8 +35,7 @@ app.use('/api/teams', teams_js_1.default);
 app.use('/api/activities', activities_js_1.default);
 app.use('/api/leaderboard', leaderboard_js_1.default);
 app.use('/api/workouts', workouts_js_1.default);
-mongoose_1.default
-    .connect(mongoUri)
+(0, database_js_1.connectDatabase)()
     .then(() => {
     app.listen(port, () => {
         console.log(`OctoFit backend running on ${baseUrl}`);

@@ -1,7 +1,7 @@
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
-import mongoose from 'mongoose';
+import { connectDatabase, MONGODB_URI } from './config/database.js';
 
 import activitiesRouter from './routes/activities.js';
 import leaderboardRouter from './routes/leaderboard.js';
@@ -13,7 +13,6 @@ dotenv.config();
 
 const app = express();
 const port = Number(process.env.PORT) || 8000;
-const mongoUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/octofit_db';
 
 const codespaceName = process.env.CODESPACE_NAME;
 const baseUrl = codespaceName
@@ -29,7 +28,7 @@ app.get('/api/health', (_req, res) => {
     service: 'octofit-tracker-backend',
     port,
     baseUrl,
-    mongoUri,
+    mongoUri: MONGODB_URI,
   });
 });
 
@@ -39,8 +38,7 @@ app.use('/api/activities', activitiesRouter);
 app.use('/api/leaderboard', leaderboardRouter);
 app.use('/api/workouts', workoutsRouter);
 
-mongoose
-  .connect(mongoUri)
+connectDatabase()
   .then(() => {
     app.listen(port, () => {
       console.log(`OctoFit backend running on ${baseUrl}`);
