@@ -2,6 +2,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
 import { connectDatabase, MONGODB_URI } from './config/database.js';
+import { getBaseUrl } from './config/server.js';
 
 import activitiesRouter from './routes/activities.js';
 import leaderboardRouter from './routes/leaderboard.js';
@@ -13,11 +14,7 @@ dotenv.config();
 
 const app = express();
 const port = 8000;
-
-const codespaceName = process.env.CODESPACE_NAME;
-const baseUrl = codespaceName
-  ? `https://${codespaceName}-8000.app.github.dev`
-  : `http://localhost:${port}`;
+const baseUrl = getBaseUrl(port);
 
 app.use(cors());
 app.use(express.json());

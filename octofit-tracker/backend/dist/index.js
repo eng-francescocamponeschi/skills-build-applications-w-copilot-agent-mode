@@ -7,6 +7,7 @@ const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const express_1 = __importDefault(require("express"));
 const database_js_1 = require("./config/database.js");
+const server_js_1 = require("./config/server.js");
 const activities_js_1 = __importDefault(require("./routes/activities.js"));
 const leaderboard_js_1 = __importDefault(require("./routes/leaderboard.js"));
 const teams_js_1 = __importDefault(require("./routes/teams.js"));
@@ -15,10 +16,7 @@ const workouts_js_1 = __importDefault(require("./routes/workouts.js"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = 8000;
-const codespaceName = process.env.CODESPACE_NAME;
-const baseUrl = codespaceName
-    ? `https://${codespaceName}-8000.app.github.dev`
-    : `http://localhost:${port}`;
+const baseUrl = (0, server_js_1.getBaseUrl)(port);
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.get('/api/health', (_req, res) => {
